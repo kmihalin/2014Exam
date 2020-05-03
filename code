@@ -1,0 +1,34 @@
+const int swtich = 12; //state constants for analog and digital pins
+const int buzzer = 6;
+const int LED = 5;
+const int lightsensor = A0;
+
+void setup(){
+pinMode(LED, OUTPUT); //declare inputs/outputs
+pinMode(buzzer, INPUT);
+pinMode(switch, INPUT);
+Serial.begin(9600); //begin serial communication
+
+}
+
+int interval=30000; //30s interval 
+unsigned long previous=0;
+int light; //stores light sensor value
+int threshold=700; //threahold between light and dark
+int switchstate=0; //stores the state of the switch
+
+void loop(){
+light=analogRead(lightsensor); //read sensor
+switchstate=digitalRead(switch); //read the switch
+
+if(light>=threshold){ //when it is light outside
+noTone(buzzer); //stop sending tone frequency
+}
+
+else if(light<threshold && switchstate==HIGH && millis()-previous >= interval){ //when it is dark for more than 30s and the door is open
+digitalWrite(LED, HIGH); //turn on light
+tone(buzzer); //make buzzer sound
+previous=millis(); //reset timer
+}
+
+}
